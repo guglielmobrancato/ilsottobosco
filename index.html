@@ -52,9 +52,9 @@
         nav a { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; }
         nav a:hover { color: var(--primary); }
 
-        /* HERO - Modificato per sfondo bosco */
+        /* HERO - Sfondo Bosco */
         .hero { 
-            min-height: 85vh; /* Leggermente più alto */
+            min-height: 85vh;
             display: flex; 
             flex-direction: column; 
             justify-content: center; 
@@ -63,14 +63,14 @@
             padding: 120px 20px 40px; 
             position: relative;
             
-            /* Sfondo immagine bosco con overlay scuro per leggibilità */
+            /* Sfondo immagine bosco con overlay scuro */
             background-image: 
                 linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.85)), 
-                url('https://images.unsplash.com/photo-1448375240586-dfd8d395ea6c?q=80&w=1920'); /* SOSTITUISCI QUESTA URL */
+                url('https://images.unsplash.com/photo-1448375240586-dfd8d395ea6c?q=80&w=1920'); 
             
             background-size: cover;
             background-position: center;
-            background-attachment: fixed; /* Effetto parallasse */
+            background-attachment: fixed;
         }
 
         .hero h1 { font-size: 3.5rem; margin-bottom: 1rem; line-height: 1.1; font-weight: 800; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); }
@@ -87,25 +87,55 @@
         .section-title { font-size: 2rem; margin: 0; text-transform: uppercase; }
         .section-title span { color: var(--primary); }
 
-        /* GRID SYSTEM CONDIVISA */
+        /* GRID E CARDS */
         .episodes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
         
-        /* CARD PODCAST */
-        .episode-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; transition: 0.3s; }
+        .episode-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; transition: 0.3s; display: flex; flex-direction: column; }
         .episode-card:hover { transform: translateY(-5px); border-color: var(--primary); }
         
-        .video-placeholder { width: 100%; height: 180px; background: #000; display: flex; align-items: center; justify-content: center; color: #333; font-size: 3rem; transition: 0.3s; }
-        .video-placeholder:hover { color: #cc0000; } /* Rosso YouTube al hover */
-        
-        .card-content { padding: 1.5rem; }
-        .ep-tag { background: #222; color: #fff; padding: 3px 8px; font-size: 0.7rem; text-transform: uppercase; border-radius: 3px; margin-bottom: 10px; display: inline-block; }
+        /* STILI THUMBNAIL YOUTUBE (Preview) */
+        .thumbnail-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* Ratio 16:9 */
+            background-color: #000;
+            overflow: hidden;
+            display: block;
+        }
+        .thumbnail-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.85;
+            transition: 0.3s;
+        }
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            z-index: 2;
+            transition: 0.3s;
+            text-shadow: 0 0 15px rgba(0,0,0,0.8);
+        }
+        .episode-card:hover .thumbnail-img { opacity: 1; transform: scale(1.05); }
+        .episode-card:hover .play-overlay { color: #ff0000; transform: translate(-50%, -50%) scale(1.1); }
 
-        /* CARD CONDUTTORI (Nuovo stile per immagini) */
+        .card-content { padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;}
+        .card-content h3 { margin: 10px 0 0 0; font-size: 1.1rem; line-height: 1.4; }
+        .ep-date { font-size: 0.75rem; color: #666; margin-bottom: 5px; display: block; text-transform: uppercase;}
+
+        /* CARD CONDUTTORI */
         .host-img {
             width: 100%;
-            height: 350px; /* Altezza fissa per uniformità */
-            object-fit: cover; /* Ritaglia l'immagine senza distorcerla */
-            object-position: top center; /* Centra sul viso */
+            height: 350px; 
+            object-fit: cover; 
+            object-position: top center; 
             display: block;
             background-color: #1a1a1a;
         }
@@ -120,6 +150,9 @@
         .social-icons a { font-size: 1.5rem; margin: 0 15px; color: var(--text-main); transition: 0.3s; }
         .social-icons a:hover { color: var(--primary); }
         .footer-text { font-size: 0.8rem; color: #555; margin-top: 2rem; }
+        
+        /* Loading Text */
+        #loading-text { text-align: center; color: #666; width: 100%; padding: 20px; }
 
         @media (max-width: 768px) { nav { display: none; } .hero h1 { font-size: 2.5rem; } }
     </style>
@@ -149,28 +182,12 @@
 
     <section id="podcast" class="section">
         <div class="section-header">
-            <h2 class="section-title">Podcast <span>Episodes</span></h2>
+            <h2 class="section-title">Ultimi <span>Episodi</span></h2>
             <a href="https://www.youtube.com/@IL_SOTTOBOSCO/videos" target="_blank" style="color:#888; font-size:0.9rem;">Vedi tutti &rarr;</a>
         </div>
-        <div class="episodes-grid">
-            <div class="episode-card">
-                <a href="https://www.youtube.com/@IL_SOTTOBOSCO" target="_blank">
-                    <div class="video-placeholder"><i class="fab fa-youtube"></i></div>
-                </a>
-                <div class="card-content"><span class="ep-tag">Arte</span><h3>Luca Lo Sapio</h3></div>
-            </div>
-            <div class="episode-card">
-                <a href="https://www.youtube.com/@IL_SOTTOBOSCO" target="_blank">
-                    <div class="video-placeholder"><i class="fab fa-youtube"></i></div>
-                </a>
-                <div class="card-content"><span class="ep-tag">Cinema</span><h3>Ciro De Caro</h3></div>
-            </div>
-            <div class="episode-card">
-                <a href="https://www.youtube.com/@IL_SOTTOBOSCO" target="_blank">
-                    <div class="video-placeholder"><i class="fab fa-youtube"></i></div>
-                </a>
-                <div class="card-content"><span class="ep-tag">Recitazione</span><h3>Emma Nitti</h3></div>
-            </div>
+        
+        <div class="episodes-grid" id="video-container">
+            <p id="loading-text">Caricamento ultimi video da YouTube...</p>
         </div>
     </section>
 
@@ -226,5 +243,61 @@
         <p class="footer-text">&copy; 2025 Il Sottobosco Podcast | mail to: info@ilsottobosco.com</p>
     </footer>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            // ---------------------------------------------------------
+            // 1. INSERISCI QUI SOTTO IL TUO ID CANALE YOUTUBE
+            // Lo trovi nelle info del canale o nell'URL (inizia con UC...)
+            // ---------------------------------------------------------
+            const channelID = "UC_TUO_ID_CANALE_QUI"; 
+            // ---------------------------------------------------------
+
+            const rss2json = "https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.youtube.com%2Ffeeds%2Fvideos.xml%3Fchannel_id%3D" + channelID;
+            const container = document.getElementById('video-container');
+
+            fetch(rss2json)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'ok') {
+                        // Rimuovi il testo di caricamento
+                        container.innerHTML = '';
+                        
+                        // Prendi solo i primi 3 video
+                        const videos = data.items.slice(0, 3);
+                        
+                        videos.forEach(video => {
+                            // Creiamo la card HTML dinamicamente
+                            const videoID = video.link.split('v=')[1];
+                            const thumbUrl = `https://img.youtube.com/vi/${videoID}/maxresdefault.jpg`;
+                            
+                            // Formattiamo la data
+                            const date = new Date(video.pubDate);
+                            const dateStr = date.toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' });
+
+                            const cardHTML = `
+                                <div class="episode-card">
+                                    <a href="${video.link}" target="_blank" class="thumbnail-container">
+                                        <img src="${thumbUrl}" alt="${video.title}" class="thumbnail-img">
+                                        <div class="play-overlay"><i class="fab fa-youtube"></i></div>
+                                    </a>
+                                    <div class="card-content">
+                                        <span class="ep-date">${dateStr}</span>
+                                        <h3>${video.title}</h3>
+                                    </div>
+                                </div>
+                            `;
+                            container.innerHTML += cardHTML;
+                        });
+                    } else {
+                        container.innerHTML = '<p>Impossibile caricare i video al momento. <a href="https://www.youtube.com/@IL_SOTTOBOSCO/videos">Visita il canale</a></p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Errore:', error);
+                    container.innerHTML = '<p>Errore di connessione. <a href="https://www.youtube.com/@IL_SOTTOBOSCO/videos">Vai al canale YouTube</a></p>';
+                });
+        });
+    </script>
 </body>
 </html>
